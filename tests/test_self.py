@@ -814,6 +814,20 @@ a.py:1:4: E0001: Parsing failed: 'invalid syntax (<unknown>, line 1)' (syntax-er
                 modify_sys_path()
             assert sys.path == paths[1:]
 
+            # Test the runpy scenario - custom paths should be preserved
+            paths = ["custom_path", *default_paths]
+            sys.path = copy(paths)
+            with _test_environ_pythonpath():
+                modify_sys_path()
+            assert sys.path == paths  # custom_path should be preserved
+
+            # Test multiple custom paths
+            paths = ["/custom1", "/custom2", *default_paths]
+            sys.path = copy(paths)
+            with _test_environ_pythonpath():
+                modify_sys_path()
+            assert sys.path == paths  # both custom paths should be preserved
+
     @pytest.mark.parametrize(
         "args",
         [
